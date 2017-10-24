@@ -10,5 +10,6 @@
 
 @interface RepoTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *repoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *repoSublabel;
 
 @end
