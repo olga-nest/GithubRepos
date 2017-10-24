@@ -10,11 +10,12 @@
 
 @implementation RepoClass
 
-- (instancetype)initWithName: (NSString *) repoName
+- (instancetype)initWithName: (NSString *) repoName andUrlString:(NSString *)urlString
 {
     self = [super init];
     if (self) {
         _repoName = repoName;
+        _urlString = urlString;
     }
     return self;
 }

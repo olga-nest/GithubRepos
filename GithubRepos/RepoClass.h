@@ -11,7 +11,8 @@
 @interface RepoClass : NSObject
 
 @property (nonatomic) NSString *repoName;
+@property (nonatomic) NSString *urlString;
 
-- (instancetype)initWithName: (NSString *) repoName;
+- (instancetype)initWithName: (NSString *) repoName andUrlString: (NSString *) urlString;
 
 @end
