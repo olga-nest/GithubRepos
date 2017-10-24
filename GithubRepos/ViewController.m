@@ -56,7 +56,8 @@
             }
             
             NSString *repoName = repo[@"name"];
-            RepoClass *repo = [[RepoClass alloc]initWithName:repoName];
+            NSString *repoUrl = repo[@"html_url"];
+            RepoClass *repo = [[RepoClass alloc]initWithName:repoName andUrlString:repoUrl];
             [self.allRepos addObject:repo];
             NSLog(@"repo: %@", repo.repoName);
         }
@@ -85,6 +86,7 @@
     RepoClass *repo = [self.allRepos objectAtIndex:indexPath.row];
     
     cell.repoLabel.text = repo.repoName;
+    cell.repoSublabel.text = repo.urlString;
     NSLog(@"Creating a cell with name %@", repo.repoName);
     
     return cell;
