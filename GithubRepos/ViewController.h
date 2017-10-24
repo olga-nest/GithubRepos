@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RepoTableViewCell.h"
+#import "RepoClass.h"
 
 @interface ViewController : UIViewController
 

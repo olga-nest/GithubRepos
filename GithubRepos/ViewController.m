@@ -8,7 +8,11 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate >
+
+@property (nonatomic) NSArray *repos;
+@property (nonatomic) NSMutableArray *allRepos;
+@property (weak, nonatomic) IBOutlet UITableView *repoTableView;
 
 @end
 
@@ -16,7 +20,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self requestDataFromGithab];
     
+
+}
+
+-(void)requestDataFromGithab {
     NSURL *url = [NSURL URLWithString:@"https://api.github.com/users/olga-nest/repos"];
     NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
     
@@ -31,7 +40,7 @@
         }
         
         NSError *jsonError = nil;
-        NSArray *repos = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError]; // 2
+        self.repos = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError]; // 2
         
         if (jsonError) { // 3
             // Handle the error
@@ -40,21 +49,45 @@
         }
         
         // If we reach this point, we have successfully retrieved the JSON from the API
-        for (NSDictionary *repo in repos) { // 4
+        for (NSDictionary *repo in self.repos) { // 4
+            
+            if (!self.allRepos) {
+                self.allRepos = [NSMutableArray new];
+            }
             
             NSString *repoName = repo[@"name"];
-            NSLog(@"repo: %@", repoName);
+            RepoClass *repo = [[RepoClass alloc]initWithName:repoName];
+            [self.allRepos addObject:repo];
+            NSLog(@"repo: %@", repo.repoName);
         }
-    
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            // This will run on the main queue
+            NSLog(@"NSOperationQueue mainQueue, array count %lu", self.allRepos.count);
+            [self.repoTableView reloadData];
+            
+        }];
     }];
     
     [dataTask resume];
 }
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    NSLog(@"Number of repos in the array %lu", self.repos.count);
+    return self.repos.count;
+}
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    RepoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CellId" forIndexPath:indexPath];
+    
+    NSLog(@"Creating cels, array count %lu", self.allRepos.count);
+    
+    RepoClass *repo = [self.allRepos objectAtIndex:indexPath.row];
+    
+    cell.repoLabel.text = repo.repoName;
+    NSLog(@"Creating a cell with name %@", repo.repoName);
+    
+    return cell;
 }
 
 
